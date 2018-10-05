@@ -3,20 +3,25 @@
 using namespace std;
 
 /*
+*  IntervalCover <Type>
+*
 *  Keeps a list of compact closed intervals on integers
-*  Tested on some Codeforces Problem
+*  Creation:     O(1)
+*  Add / Remove: O(nr_intervals * log(Size))
+*
+*  Tested: Some Codeforces Problems
 */
 
 template <class T>
 class IntervalCover
 {
 public:
-    const int INF = 1e9;
+    static const T INF;
 
 private:
-    set<pair<T,T>> s;
+    set<pair<T, T>> s;
 
-    auto Get_upper_touching_interval(T st, T dr)
+    typename set<pair<T, T>>::iterator Get_upper_touching_interval(T st, T dr)
     {
         /// returns the rightmost interval containing something from [st, dr]
         auto it = s.upper_bound({dr, INF});
@@ -29,11 +34,10 @@ private:
     }
 
 public:
-    auto Add_interval(T st, T dr)
+    vector<pair<T, T>> Add_interval(T st, T dr)
     {
-        /// Complexity: O(log Size) / returned intervals are O(queries) amortized
         /// returns the closed intervals needed to complete [st, dr]
-        vector<pair<T,T>> touch, to_add;
+        vector<pair<T, T>> touch, to_add;
         auto it = s.end();
         while( (it = Get_upper_touching_interval(st - 1, dr + 1)) != s.end() )
         {
@@ -75,11 +79,10 @@ public:
         return to_add;
     }
 
-    auto Remove_interval(T st, T dr)
+    vector<pair<T, T>> Remove_interval(T st, T dr)
     {
-        /// Complexity: O(log Size) / returned intervals are O(queries) amortized
         /// returns the closed intervals needed to remove [st, dr]
-        vector<pair<T,T>> touch, to_remove;
+        vector<pair<T, T>> touch, to_remove;
         auto it = s.end();
         while( (it = get_upper_touching_interval(st, dr)) != s.end() )
         {
@@ -114,18 +117,24 @@ public:
     }
 };
 
+/// default constants, you can specialize them
+template <class T>
+const T IntervalCover<T>::INF = 1e9;
+
+/// specialized constants
 template <>
-class IntervalCover <long long>
-{
-public:
-    const long long INF = 1e18;
-};
+const long long IntervalCover<long long>::INF = 1e18;
+
+template <>
+const int IntervalCover<int>::INF = 1e9;
 
 
 
 /*
+*  LinearFuncSumLazySegmentTree <Type, Type Modulo>
+*
 *  Lazy segment tree
-*  Update: Apply a polynomial to numbers in range
+*  Update: Apply a deg 1 polynomial to numbers in range
 *  Query:  Return sum of numbers in range
 *  Complexity:  Creation: O(N)
 *               Update:   O(logN)
@@ -142,9 +151,9 @@ template <class T, T Modulo>
 class LinearFuncSumLazySegmentTree
 {
 public:
-    const T NullElement = 0;
-    const T IdentityElement = 1;
-    const T MOD = Modulo;
+    static const T NullElement;
+    static const T IdentityElement;
+    static const T MOD = Modulo;
 private:
     int N;
     vector<T> tree;
@@ -152,6 +161,7 @@ private:
 
     void Propagate(int nod, int st, int dr)
     {
+        /// Propagate the pending update to lower level
         tree[nod] = (lazy[nod].first * tree[nod] + lazy[nod].second * (dr - st + 1)) % MOD;
         if( st < dr ) {
             lazy[2 * nod] = Combine(lazy[nod], lazy[2 * nod]);
@@ -162,6 +172,7 @@ private:
 
     pair<T, T> Combine(const pair<T, T> &a, const pair<T, T> &b)
     {
+        /// Returns the transformation f(x) = a(b(x))
         return {
             (a.first * b.first) % MOD,
             (a.first * b.second + a.second) % MOD
@@ -172,11 +183,12 @@ public:
     LinearFuncSumLazySegmentTree(int N) :
         N(N),
         tree(vector<T>(4 * N + 2, NullElement)),
-        lazy(vector<pair<T,T>>(4 * N + 2, {IdentityElement, NullElement}))
+        lazy(vector<pair<T, T>>(4 * N + 2, {IdentityElement, NullElement}))
         {}
 
     void Update(int nod, int st, int dr, int x, int y, const pair<T, T> &poly)
     {
+        /// Apply the poly to [x, y]
         Propagate(nod, st, dr);
         if( y < st || dr < x ) return ;
 
@@ -197,6 +209,7 @@ public:
 
     T Query(int nod, int st, int dr, int x, int y)
     {
+        /// Find sum of elements of [x, y]
         Propagate(nod, st, dr);
         if( y < st || dr < x )
             return NullElement;
@@ -211,3 +224,9 @@ public:
         return (left_sum + right_sum) % MOD;
     }
 };
+
+/// default constants, you can specialize them
+template<class T, T Modulo>
+const T LinearFuncSumLazySegmentTree<T, Modulo>::NullElement = 0;
+template<class T, T Modulo>
+const T LinearFuncSumLazySegmentTree<T, Modulo>::IdentityElement = 1;
