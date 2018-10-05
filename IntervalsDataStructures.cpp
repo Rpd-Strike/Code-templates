@@ -4,7 +4,7 @@ using namespace std;
 
 /*
 *  Keeps a list of compact closed intervals on integers
-*  NOT TESTED
+*  Tested on some Codeforces Problem
 */
 
 template <class T>
@@ -133,7 +133,7 @@ public:
 *        as you need to keep polynomials of order
 *        Degree ^ (nr of updates) worst case
 *
-*  NOT TESTED
+*  Tested on some Codeforces Problem
 */
 
 template <class T, T Modulo>
