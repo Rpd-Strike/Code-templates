@@ -121,6 +121,8 @@ public:
     const long long INF = 1e18;
 };
 
+
+
 /*
 *  Lazy segment tree
 *  Update: Apply a polynomial to numbers in range
@@ -171,10 +173,7 @@ public:
         N(N),
         tree(vector<T>(4 * N + 2, NullElement)),
         lazy(vector<pair<T,T>>(4 * N + 2, {IdentityElement, NullElement}))
-        {
-          ///  for( int i = 1;  i <= 200000;  ++i )
-          ///      lazy[i] = {1, 0};
-        }
+        {}
 
     void Update(int nod, int st, int dr, int x, int y, const pair<T, T> &poly)
     {
@@ -211,5 +210,4 @@ public:
 
         return (left_sum + right_sum) % MOD;
     }
-
 };
