@@ -79,4 +79,8 @@ struct SegTree
         Atom rig = _interv_query(fD, mid + 1, dr, x, y);
         return lef + rig;
     }
+
+    #undef fS (2 * nod)
+    #undef fD (2 * nod + 1)
+    #undef mid ((st + dr) / 2)
 };
