@@ -80,7 +80,21 @@ struct SegTree
         return lef + rig;
     }
 
-    #undef fS (2 * nod)
-    #undef fD (2 * nod + 1)
-    #undef mid ((st + dr) / 2)
+    int cbin(int nod, int st, int dr, Atom val)
+    {
+        if (st == dr)
+            return st;
+        
+        if (prop(tree[fS], val)) // if (prop(tree[fS], val))
+            // ne uitam in stanga
+            return cbin(fS, st, mid, val);
+        
+        return cbin(fD, mid + 1, dr, val);
+
+        
+    }
+
+    #undef fS
+    #undef fD
+    #undef mid
 };

@@ -194,7 +194,7 @@ public:
 
         if( x <= st && dr <= y ) {
             lazy[nod] = poly;
-            Propagate(nod, st, dr);
+            // Propagate(nod, st, dr);
             return ;
         }
 
